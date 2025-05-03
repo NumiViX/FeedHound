@@ -13,5 +13,11 @@ class SourceCreate(SourceBase):
 class SourceRead(SourceBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
+
+
+class SourceUpdate(BaseModel):
+    title: str | None
+    url: HttpUrl | None
