@@ -1,9 +1,21 @@
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, HttpUrl, field_validator
 
 
 class SourceBase(BaseModel):
     title: str
     url: HttpUrl
+    rss_url: HttpUrl
+
+    model_config = {
+        "json_encoders": {
+            HttpUrl: lambda value: str(value)
+        }
+    }
+
+    @field_validator("url", "rss_url", mode="after")
+    @classmethod
+    def convert_httpurl(cls, value):
+        return str(value) if value else value
 
 
 class SourceCreate(SourceBase):
@@ -19,5 +31,11 @@ class SourceRead(SourceBase):
 
 
 class SourceUpdate(BaseModel):
-    title: str | None
-    url: HttpUrl | None
+    title: str | None = None
+    url: HttpUrl | None = None
+    rss_url: HttpUrl | None = None
+
+    @field_validator("url", "rss_url", mode="after")
+    @classmethod
+    def convert_httpurl(cls, value):
+        return str(value) if value else value

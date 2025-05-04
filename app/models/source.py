@@ -9,6 +9,7 @@ class Source(Base):
     id = Column(Integer, primary_key=True, index=True)
     url = Column(String, nullable=False, unique=True)
     title = Column(String, nullable=True)
+    rss_url = Column(String, unique=True, nullable=True)
     news = relationship(
         "News",
         back_populates="source",

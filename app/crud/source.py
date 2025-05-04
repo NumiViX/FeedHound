@@ -13,7 +13,6 @@ class SourceCRUD:
     ) -> Source:
 
         source_data = source_data.model_dump()
-        source_data["url"] = str(source_data["url"])
         new_source = Source(**source_data)
         session.add(new_source)
         await session.commit()
@@ -46,7 +45,7 @@ class SourceCRUD:
         session: AsyncSession
     ) -> Source:
         for key, value in source_data.model_dump(exclude_unset=True).items():
-            setattr(source, key, str(value))
+            setattr(source, key, value)
         await session.commit()
         await session.refresh(source)
         return source
