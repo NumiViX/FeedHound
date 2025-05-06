@@ -1,9 +1,7 @@
 from fastapi import FastAPI
 
-from app.api.v1 import source, news, auth
+from app import main_router
 
 app = FastAPI()
 
-app.include_router(auth.router)
-app.include_router(source.router)
-app.include_router(news.router)
+app.include_router(main_router)

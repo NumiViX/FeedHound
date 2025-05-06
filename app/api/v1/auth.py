@@ -3,9 +3,10 @@ from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.db.session import get_async_session
-from app.core.security import (verify_password,
-                               create_access_token,
+from app.core.security import (create_access_token,
+                               verify_password,
                                ACCESS_TOKEN_EXPIRE_MINUTES)
 from app.crud.users import user_crud
 from app.schemas.users import UserCreate, UserRead

@@ -1,13 +1,14 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, update, delete
 from typing import List, Optional
+
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
 from app.models.news import News
 from app.schemas.news import NewsCreate
 
 
 class NewsCRUD:
-    async def create_news(
+    async def create(
         self,
         news_data: NewsCreate,
         session: AsyncSession
@@ -23,11 +24,11 @@ class NewsCRUD:
         await session.refresh(news)
         return news
 
-    async def get_all_news(self, session: AsyncSession) -> List[News]:
+    async def get_all(self, session: AsyncSession) -> List[News]:
         result = await session.execute(select(News))
         return result.scalars().all()
 
-    async def get_news_by_id(
+    async def get_by_id(
         self,
         news_id: int,
         session: AsyncSession
@@ -35,7 +36,7 @@ class NewsCRUD:
         result = await session.execute(select(News).where(News.id == news_id))
         return result.scalar_one_or_none()
 
-    async def update_news(
+    async def update(
         self,
         news: News,
         news_data: NewsCreate,
@@ -49,7 +50,7 @@ class NewsCRUD:
         await session.refresh(news)
         return news
 
-    async def delete_news(self, news: News, session: AsyncSession) -> None:
+    async def delete(self, news: News, session: AsyncSession) -> None:
         await session.delete(news)
         await session.commit()
 

@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.schemas.source import SourceCreate, SourceRead, SourceUpdate
-from app.schemas.news import NewsRead
 from app.db.session import get_async_session
 from app.crud.source import source_crud
 from app.crud.news import news_crude
 from app.parsers.news_parser import parse_news
+from app.schemas.news import NewsRead
+from app.schemas.source import SourceCreate, SourceRead, SourceUpdate
 
 router = APIRouter(prefix="/sources", tags=["Sources"])
 
@@ -16,12 +16,12 @@ async def create(
     source: SourceCreate,
     session: AsyncSession = Depends(get_async_session)
 ):
-    return await source_crud.create_source(source, session)
+    return await source_crud.create(source, session)
 
 
 @router.get("/", response_model=list[SourceRead])
 async def read(session: AsyncSession = Depends(get_async_session)):
-    return await source_crud.get_sources(session)
+    return await source_crud.get(session)
 
 
 @router.get("/{source_id}", response_model=SourceRead)
@@ -71,6 +71,6 @@ async def parse_source(
 
     created_news = []
     for item in news_items:
-        created_news.append(await news_crude.create_news(item, session))
+        created_news.append(await news_crude.create(item, session))
 
     return created_news

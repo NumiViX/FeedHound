@@ -1,12 +1,12 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.source import Source
 from app.schemas.source import SourceCreate, SourceUpdate
 
 
 class SourceCRUD:
-    async def create_source(
+    async def create(
         self,
         source_data: SourceCreate,
         session: AsyncSession
@@ -20,13 +20,11 @@ class SourceCRUD:
 
         return new_source
 
-    async def get_sources(
+    async def get(
         self,
         session: AsyncSession
     ) -> list[Source]:
-
         result = await session.execute(select(Source))
-
         return result.scalars().all()
 
     async def get_by_id(

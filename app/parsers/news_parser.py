@@ -1,5 +1,5 @@
-import feedparser
 from datetime import datetime
+import feedparser
 
 from app.schemas.news import NewsCreate
 

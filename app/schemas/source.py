@@ -1,4 +1,4 @@
-from pydantic import BaseModel, HttpUrl, field_validator
+from pydantic import BaseModel, field_validator, HttpUrl
 
 
 class SourceBase(BaseModel):
