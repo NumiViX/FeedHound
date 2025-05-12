@@ -7,6 +7,12 @@ from app.schemas.users import UserCreate
 
 
 class UserCRUD:
+    async def get_by_username(self, username: str, session: AsyncSession):
+        result = await session.execute(
+            select(User).where(User.username == username)
+        )
+        return result.scalar_one_or_none()
+
     async def get_by_email(self, email: str, session: AsyncSession):
         result = await session.execute(select(User).where(User.email == email))
         return result.scalar_one_or_none()
