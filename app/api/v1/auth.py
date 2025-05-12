@@ -1,4 +1,3 @@
-from datetime import timedelta
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -33,7 +32,8 @@ async def register(
         raise HTTPException(status_code=400, detail="Email already registered")
     existing_username = await user_crud.get_by_username(user.username, session)
     if existing_username:
-        raise HTTPException(status_code=400, detail="Username already registered")
+        raise HTTPException(
+            status_code=400, detail="Username already registered")
     return await user_crud.create(user, session)
 
 
