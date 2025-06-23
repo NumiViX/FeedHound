@@ -2,6 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+import logging
 
 from app.db.session import get_async_session
 from app.crud.news import news_crude
@@ -9,9 +10,12 @@ from app.schemas.news import NewsCreate, NewsRead, NewsUpdate
 
 router = APIRouter(prefix="/news", tags=["News"])
 
+logger = logging.getLogger(__name__)
+
 
 @router.get("/", response_model=List[NewsRead])
 async def get_all_news(session: AsyncSession = Depends(get_async_session)):
+    logger.debug("Fetching all news")
     return await news_crude.get_all(session)
 
 
@@ -23,6 +27,7 @@ async def get_news_by_id(
     news = await news_crude.get_by_id(news_id, session)
     if not news:
         raise HTTPException(status_code=404, detail="News not found")
+    logger.debug("Returning news %s", news_id)
     return news
 
 
@@ -31,6 +36,7 @@ async def create_news(
     news: NewsCreate,
     session: AsyncSession = Depends(get_async_session)
 ):
+    logger.info("Creating news %s", news.url)
     return await news_crude.create(news, session)
 
 
@@ -43,6 +49,7 @@ async def update_news(
     news = await news_crude.get_by_id(news_id, session)
     if not news:
         raise HTTPException(status_code=404, detail="News not found")
+    logger.info("Updating news %s", news_id)
     return await news_crude.update(news, news_data, session)
 
 
@@ -55,6 +62,7 @@ async def delete_news(
     if not news:
         raise HTTPException(status_code=404, detail="News not found")
     await news_crude.delete(news, session)
+    logger.info("Deleted news %s", news_id)
     return HTTPException(status_code=204, detail="Source deleted")
 
 

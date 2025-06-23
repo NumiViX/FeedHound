@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
+import logging
 
 from app.core.config import settings
 
@@ -29,7 +30,11 @@ sync_session_maker = sessionmaker(
     autocommit=False
 )
 
+logger = logging.getLogger(__name__)
+
 
 async def get_async_session() -> AsyncSession:
+    logger.debug("Creating async DB session")
     async with async_session() as session:
         yield session
+
