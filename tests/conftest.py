@@ -40,3 +40,34 @@ if 'passlib.context' not in sys.modules:
     passlib_pkg = sys.modules.setdefault('passlib', ModuleType('passlib'))
     passlib_pkg.context = passlib_context_module
     sys.modules['passlib.context'] = passlib_context_module
+
+import pytest
+
+try:
+    from sqlalchemy.ext.asyncio import (
+        create_async_engine,
+        async_sessionmaker,
+        AsyncSession,
+    )
+    from app.db.base import Base
+except Exception:  # pragma: no cover - SQLAlchemy may be missing
+    create_async_engine = async_sessionmaker = AsyncSession = None
+    Base = None
+
+
+@pytest.fixture()
+async def async_session():
+    """Create an in-memory SQLite session for testing."""
+    if create_async_engine is None:
+        pytest.skip("SQLAlchemy is not available")
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:", future=True)
+    async_session_maker = async_sessionmaker(
+        bind=engine,
+        expire_on_commit=False,
+        class_=AsyncSession,
+    )
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    async with async_session_maker() as session:
+        yield session
+    await engine.dispose()
