@@ -1,8 +1,11 @@
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
+import logging
 
 from app.models.source import Source
 from app.schemas.source import SourceCreate, SourceUpdate
+
+logger = logging.getLogger(__name__)
 
 
 class SourceCRUD:
@@ -17,6 +20,7 @@ class SourceCRUD:
         session.add(new_source)
         await session.commit()
         await session.refresh(new_source)
+        logger.debug("Created source %s", new_source.id)
 
         return new_source
 
@@ -25,7 +29,9 @@ class SourceCRUD:
         session: AsyncSession
     ) -> list[Source]:
         result = await session.execute(select(Source))
-        return result.scalars().all()
+        sources = result.scalars().all()
+        logger.debug("Fetched %d sources", len(sources))
+        return sources
 
     async def get_by_id(
         self,
@@ -34,7 +40,9 @@ class SourceCRUD:
     ) -> Source | None:
         data = select(Source).where(Source.id == source_id)
         result = await session.execute(data)
-        return result.scalar_one_or_none()
+        source = result.scalar_one_or_none()
+        logger.debug("Fetched source by id %s: %s", source_id, bool(source))
+        return source
 
     async def update(
         self,
@@ -46,6 +54,7 @@ class SourceCRUD:
             setattr(source, key, value)
         await session.commit()
         await session.refresh(source)
+        logger.debug("Updated source %s", source.id)
         return source
 
     async def delete(
@@ -55,6 +64,8 @@ class SourceCRUD:
     ) -> None:
         await session.delete(source)
         await session.commit()
+        logger.debug("Deleted source %s", source.id)
 
 
 source_crud = SourceCRUD()
+

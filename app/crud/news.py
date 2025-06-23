@@ -1,10 +1,13 @@
 from typing import List, Optional
+import logging
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from app.models.news import News
 from app.schemas.news import NewsCreate
+
+logger = logging.getLogger(__name__)
 
 
 class NewsCRUD:
@@ -22,11 +25,14 @@ class NewsCRUD:
         session.add(news)
         await session.commit()
         await session.refresh(news)
+        logger.debug("Created news %s", news.id)
         return news
 
     async def get_all(self, session: AsyncSession) -> List[News]:
         result = await session.execute(select(News))
-        return result.scalars().all()
+        news = result.scalars().all()
+        logger.debug("Fetched %d news items", len(news))
+        return news
 
     async def get_by_id(
         self,
@@ -34,7 +40,9 @@ class NewsCRUD:
         session: AsyncSession
     ) -> Optional[News]:
         result = await session.execute(select(News).where(News.id == news_id))
-        return result.scalar_one_or_none()
+        news = result.scalar_one_or_none()
+        logger.debug("Fetched news by id %s: %s", news_id, bool(news))
+        return news
 
     async def update(
         self,
@@ -48,11 +56,14 @@ class NewsCRUD:
         news.source_id = news_data.source_id
         await session.commit()
         await session.refresh(news)
+        logger.debug("Updated news %s", news.id)
         return news
 
     async def delete(self, news: News, session: AsyncSession) -> None:
         await session.delete(news)
         await session.commit()
+        logger.debug("Deleted news %s", news.id)
 
 
 news_crude = NewsCRUD()
+

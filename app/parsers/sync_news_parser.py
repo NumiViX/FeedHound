@@ -1,10 +1,13 @@
 import feedparser
 from datetime import datetime
+import logging
 
 from app.schemas.news import NewsCreate
 
 
 def parse_news_sync(source_id: int, rss_url: str) -> list[NewsCreate]:
+    logger = logging.getLogger(__name__)
+    logger.debug("Parsing RSS feed %s", rss_url)
     feed = feedparser.parse(rss_url)
     news = []
     for entry in feed.entries:
@@ -22,3 +25,4 @@ def parse_news_sync(source_id: int, rss_url: str) -> list[NewsCreate]:
             )
         )
     return news
+
