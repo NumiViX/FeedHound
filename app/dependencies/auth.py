@@ -9,14 +9,14 @@ from app.core.security import SECRET_KEY, ALGORITHM
 from app.db.session import get_async_session
 from app.models.users import User
 
-oauth2_csheme = OAuth2PasswordBearer(tokenUrl="api/v1/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
 
 async def get_current_user(
-        token: str = Depends(oauth2_csheme),
+        token: str = Depends(oauth2_scheme),
         session: AsyncSession = Depends(get_async_session)
 ):
-    credentials_eception = HTTPException(
+    credentials_exception = HTTPException(
         status_code=401,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
@@ -25,16 +25,16 @@ async def get_current_user(
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_name = payload.get("sub")
         if user_name is None:
-            raise credentials_eception
+            raise credentials_exception
     except JWTError:
-        raise credentials_eception
+        raise credentials_exception
 
     result = await session.execute(
         select(User).where(User.username == user_name)
     )
     user = result.scalar_one_or_none()
     if user is None:
-        raise credentials_eception
+        raise credentials_exception
     return user
 
 
