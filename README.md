@@ -20,7 +20,7 @@
 ```bash
 git clone git@github.com:NumiViX/FeedHound.git
 cd feedhound
-poetry install
+pip install -r requirements.txt
 cp .env.example .env
 ```
 
@@ -38,10 +38,10 @@ docker-compose up -d
 alembic upgrade head
 
 # 3. Запуск FastAPI сервера
-poetry run uvicorn app.main:app --reload
+uvicorn app.main:app --reload
 
 # 4. Запуск Celery воркера
-poetry run celery -A app.core.celery_app.celery worker --loglevel=info
+celery -A app.core.celery_app.celery worker --loglevel=info
 ```
 
 ---
