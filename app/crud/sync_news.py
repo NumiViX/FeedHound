@@ -39,7 +39,7 @@ class NewsSyncCRUD:
         logger.debug("Updated news %s", news.id)
         return news
 
-    def delete(sels, news: News, session: Session) -> None:
+    def delete(self, news: News, session: Session) -> None:
         session.delete(news)
         session.commit()
         logger.debug("Deleted news %s", news.id)
