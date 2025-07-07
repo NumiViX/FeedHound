@@ -3,7 +3,7 @@ import pytest
 
 from app.crud.news import NewsCRUD
 from app.crud.source import SourceCRUD
-from app.schemas.news import NewsCreate
+from app.schemas.news import NewsCreate, NewsUpdate
 from app.schemas.source import SourceCreate
 
 
@@ -33,7 +33,7 @@ async def test_news_crud(async_session):
 
     updated = await crud.update(
         fetched,
-        NewsCreate(
+        NewsUpdate(
             title="Updated",
             url="http://s.com/n2",
             published_at=create_data.published_at,
