@@ -54,7 +54,7 @@ async def update_source(
     return await source_crud.update(source, source_data, session)
 
 
-@router.delete("/source_id")
+@router.delete("/{source_id}")
 async def delete_source(
     source_id: int,
     session: AsyncSession = Depends(get_async_session)
@@ -64,7 +64,7 @@ async def delete_source(
         raise HTTPException(status_code=404, detail="Source not found")
     await source_crud.delete(source, session)
     logger.info("Deleted source %s", source_id)
-    return {"detail: Source deleted"}
+    return {"detail": "Source deleted"}
 
 
 @router.post("/{source_id}/parse")
