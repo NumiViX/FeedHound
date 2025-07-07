@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import logging
 import feedparser
 
@@ -17,11 +17,18 @@ async def parse_news(
     feed = feedparser.parse(rss_url)
     news = []
     for entry in feed.entries:
-        news.append(NewsCreate(
-            title=entry.title,
-            url=entry.link,
-            published_at=datetime(*entry.published_parsed[:6]),
-            source_id=source_id
-        ))
+        published_at = (
+            datetime(*entry.published_parsed[:6])
+            if "published_parsed" in entry
+            else datetime.now(timezone.utc)
+        )
+        news.append(
+            NewsCreate(
+                title=entry.title,
+                url=entry.link,
+                published_at=published_at,
+                source_id=source_id,
+            )
+        )
     return news
 
