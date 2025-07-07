@@ -65,5 +65,5 @@ class NewsCRUD:
         logger.debug("Deleted news %s", news.id)
 
 
-news_crude = NewsCRUD()
+news_crud = NewsCRUD()
 

@@ -4,7 +4,7 @@ import logging
 
 from app.db.session import get_async_session
 from app.crud.source import source_crud
-from app.crud.news import news_crude
+from app.crud.news import news_crud
 from app.parsers.news_parser import parse_news
 from app.schemas.news import NewsRead
 from app.schemas.source import SourceCreate, SourceRead, SourceUpdate
@@ -79,7 +79,7 @@ async def parse_source(
 
     created_news = []
     for item in news_items:
-        created = await news_crude.create(item, session)
+        created = await news_crud.create(item, session)
         logger.debug("Created news from parse %s", created.id)
         created_news.append(created)
 
