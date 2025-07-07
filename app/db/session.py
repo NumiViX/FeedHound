@@ -25,7 +25,7 @@ sync_engine = create_engine(
 )
 
 sync_session_maker = sessionmaker(
-    bin=sync_engine,
+    bind=sync_engine,
     autoflush=False,
     autocommit=False
 )
