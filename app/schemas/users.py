@@ -12,7 +12,6 @@ class UserRead(BaseModel):
     email: EmailStr
     username: str
     is_active: bool
-    is_active: bool
 
     model_config = {
         "from_attributes": True
