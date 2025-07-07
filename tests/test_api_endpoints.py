@@ -75,6 +75,16 @@ async def test_news_endpoints(client):
     resp = client.get("/api/v1/news/999")
     assert resp.status_code == 404
 
+    update_data = {
+        "title": "Updated",
+        "url": "http://s.com/n2",
+        "published_at": news_data["published_at"],
+        "source_id": src_id,
+    }
+    put_resp = client.put(f"/api/v1/news/{news_id}", json=update_data)
+    assert put_resp.status_code == 200
+    assert put_resp.json()["title"] == "Updated"
+
 
 @pytest.mark.asyncio
 async def test_auth_and_user_me(client):

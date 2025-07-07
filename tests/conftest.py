@@ -107,6 +107,11 @@ if 'httpx' not in sys.modules:
     _client_module.USE_CLIENT_DEFAULT = object()
     sys.modules['httpx._client'] = _client_module
 
+    # Expose the submodule as an attribute so type hints referencing
+    # ``httpx._client`` work as expected.
+    httpx_module._client = _client_module
+    httpx_module.__path__ = []
+
     httpx_module.Client = Client
     httpx_module.BaseTransport = BaseTransport
     httpx_module.Request = Request

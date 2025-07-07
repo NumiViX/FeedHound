@@ -40,7 +40,7 @@ async def create_news(
     return await news_crud.create(news, session)
 
 
-@router.put("/{news_id}", response_model=NewsUpdate)
+@router.put("/{news_id}", response_model=NewsRead)
 async def update_news(
     news_id: int,
     news_data: NewsUpdate,
