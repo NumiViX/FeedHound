@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 import logging
 
@@ -63,7 +63,7 @@ async def delete_news(
         raise HTTPException(status_code=404, detail="News not found")
     await news_crud.delete(news, session)
     logger.info("Deleted news %s", news_id)
-    return HTTPException(status_code=204, detail="Source deleted")
+    return Response(status_code=204)
 
 
 
