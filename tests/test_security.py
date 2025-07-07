@@ -23,7 +23,7 @@ def test_get_password_hash_and_verify_password():
 
 def test_create_access_token_contains_claims():
     data = {"sub": "tester"}
-    token = create_access_token(data=data, expides_delta=timedelta(minutes=5))
+    token = create_access_token(data=data, expires_delta=timedelta(minutes=5))
 
     decoded = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
 
