@@ -1,5 +1,5 @@
 import feedparser
-from datetime import datetime
+from datetime import datetime, timezone
 import logging
 
 from app.schemas.news import NewsCreate
@@ -14,7 +14,7 @@ def parse_news_sync(source_id: int, rss_url: str) -> list[NewsCreate]:
         published_at = (
             datetime(*entry.published_parsed[:6])
             if "published_parsed" in entry
-            else datetime.now(datetime.timezone.utc)
+            else datetime.now(timezone.utc)
         )
         news.append(
             NewsCreate(
